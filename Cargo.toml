@@ -1,0 +1,27 @@
+[package]
+name = "rust_sat_polyomino"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+varisat = "0.2.2"
+
+[lib]
+name = "rust_sat_polyomino"
+path = "src/main.rs"
+
+[[example]]
+name = "tromino"
+path = "examples/tromino.rs"
+
+[[example]]
+name = "tetromino"
+path = "examples/tetromino.rs"
+
+[[example]]
+name = "pentomino_flips"
+path = "examples/pentomino_flips.rs"
+
+[[example]]
+name = "pentomino"
+path = "examples/pentomino.rs"
