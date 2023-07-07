@@ -4,6 +4,9 @@ This is a SAT solver for polyomino puzzles written in Rust. It is based on the [
 ## Why?
 Why not. I am at the time of writing of this file learning Rust and I thought using SAT to solve polyomino puzzles would be a fun project.
 
+## How?
+You can read more on how the problem can be translated into SAT [here](https://www.fishlet.com/2022/01/21/pentomino/).
+
 ## Examples
 The first example is with tromino. You can see that that thet SAT solution is found in 134.83µs. 
 ```
