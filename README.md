@@ -8,32 +8,32 @@ Why not. I am at the time of writing of this file learning Rust and I thought us
 You can read more on how the problem can be translated into SAT [here](https://www.fishlet.com/2022/01/21/pentomino/).
 
 ## Examples
-The first example is with tromino. You can see that that thet SAT solution is found in 134.83µs. 
+The first example is with tromino. You can see that that thet SAT solution is found in 35.79µs. 
 ```
 # cargo run --example tromino
-time elapsed: 286.42µs
+time elapsed: 279.67µs
 81 vars
-time elapsed: 246.29µs
+time elapsed: 235.42µs
 217 clauses
-time elapsed: 134.83µs
+time elapsed: 35.79µs
 Result: Ok(true)
-time elapsed: 144.75µs
+time elapsed: 49.25µs
 ABB
 AB 
 A  
 Pieces positioned: [[(0, 0), (1, 0), (2, 0)], [(0, 1), (0, 2), (1, 1)]]
 ```
 
-The second example is with tetronimo. You can see that that thet SAT solution is found in 97.76s. 
+The second example is with tetronimo. You can see that that thet SAT solution is found in 86.76s. 
 ```
 # cargo run --example tetromino
-time elapsed: 50.34ms
+time elapsed: 39.33ms
 24109 vars
-time elapsed: 6.58s
+time elapsed: 6.70s
 6925919 clauses
-time elapsed: 91.76s
+time elapsed: 86.76s
 Result: Ok(true)
-time elapsed: 4.40s
+time elapsed: 4.28s
 DFFFF
 DDEEE
 HDJJE
@@ -45,16 +45,16 @@ CAAAA
 Pieces positioned: [[(7, 1), (7, 2), (7, 3), (7, 4)], [(3, 3), (3, 4), (4, 3), (4, 4)], [(5, 0), (6, 0), (6, 1), (7, 0)], [(0, 0), (1, 0), (1, 1), (2, 1)], [(1, 2), (1, 3), (1, 4), (2, 4)], [(0, 1), (0, 2), (0, 3), (0, 4)], [(5, 3), (5, 4), (6, 3), (6, 4)], [(2, 0), (3, 0), (3, 1), (4, 0)], [(4, 1), (5, 1), (5, 2), (6, 2)], [(2, 2), (2, 3), (3, 2), (4, 2)]]
 ```
 
-The pentomino puzzle is a classic polyomino puzzle. The goal is to place all 12 pentominoes into a 6x10 grid. First we run it with flips and it runs in 52.09s.
+The pentomino puzzle is a classic polyomino puzzle. The goal is to place all 12 pentominoes into a 6x10 grid. First we run it with flips and it runs in 52.93s.
 ```
 # cargo run --example pentomino_flips
-time elapsed: 307.12ms
+time elapsed: 286.18ms
 125417 vars
-time elapsed: 130.80s
+time elapsed: 129.03s
 126979357 clauses
-time elapsed: 52.09s
+time elapsed: 52.93s
 Result: Ok(true)
-time elapsed: 121.43s
+time elapsed: 119.88s
 KKKIII
 FKBIIL
 FKBBBL

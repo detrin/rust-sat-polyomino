@@ -86,48 +86,42 @@ impl Piece {
 
     fn shift_to_origin(&mut self) {
         let ((min_x, min_y), _) = self.get_min_max();
-        let mut new_cells = Vec::new();
-        for (x, y) in self.cells.iter() {
-            new_cells.push((*x - min_x, *y - min_y));
+        for (cell_x, cell_y) in self.cells.iter_mut() {
+            *cell_x -= min_x;
+            *cell_y -= min_y;
         }
-        self.cells = new_cells;
     }
 
     fn shift(&mut self, x: usize, y: usize) {
-        let mut new_cells = Vec::new();
-        for (cell_x, cell_y) in self.cells.iter() {
-            new_cells.push((*cell_x + x, *cell_y + y));
+        for (cell_x, cell_y) in self.cells.iter_mut() {
+            *cell_x += x;
+            *cell_y += y;
         }
-        self.cells = new_cells;
     }
 
     fn rotate90(&mut self) {
         let (_, (_, max_y)) = self.get_min_max();
-        let mut new_cells = Vec::new();
-        for (x, y) in self.cells.iter() {
-            new_cells.push((max_y - *y, *x));
+        for (cell_x, cell_y) in self.cells.iter_mut() {
+            *cell_y = max_y - *cell_y;
+            std::mem::swap(cell_x, cell_y);
+
         }
-        self.cells = new_cells;
         self.shift_to_origin();
     }
 
     fn flip_x(&mut self) {
         let (_, (max_x, _)) = self.get_min_max();
-        let mut new_cells = Vec::new();
-        for (x, y) in self.cells.iter() {
-            new_cells.push((max_x - *x, *y));
+        for (cell_x, _) in self.cells.iter_mut() {
+            *cell_x = max_x - *cell_x;
         }
-        self.cells = new_cells;
         self.shift_to_origin();
     }
 
     fn flip_y(&mut self) {
         let (_, (_, max_y)) = self.get_min_max();
-        let mut new_cells = Vec::new();
-        for (x, y) in self.cells.iter() {
-            new_cells.push((*x, max_y - *y));
+        for (_, cell_y) in self.cells.iter_mut() {
+            *cell_y = max_y - *cell_y;
         }
-        self.cells = new_cells;
         self.shift_to_origin();
     }
 
