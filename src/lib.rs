@@ -307,15 +307,15 @@ pub fn solve(
     }
 
     let time_now = Instant::now();
-    for x in 0..grid_width {
-        for y in 0..grid_height {
-            if !grid_mask[y][x] {
+    for (x, inner) in grid_mask.iter().enumerate() {
+        for (y, mask) in inner.iter().enumerate() {
+            if !mask {
                 continue;
             }
             // println!("({},{}) ", x, y);
             let mut clause = vec![];
-            for depth in 0..grid_lit.len() {
-                clause.push(grid_lit[depth][x][y]);
+            for grid_lit_slice in grid_lit.iter() {
+                clause.push(grid_lit_slice[x][y]);
             }
             solver.add_clause(&clause);
             clause_pos += 1;
@@ -348,22 +348,19 @@ pub fn solve(
         let model = solver.model().unwrap();
         let mut cells_to_print = vec![];
         for _ in 0..grid_width {
-            let mut row = vec![];
-            for _ in 0..grid_height {
-                row.push(' ');
-            }
+            let row = vec![' '; grid_height];
             cells_to_print.push(row);
         }
         let mut curr_letter = 'A';
-        for depth in 0..grid_lit.len() {
+        for grid_lit_1 in grid_lit.iter() {
             let mut piece_positioned = vec![];
             let mut if_found = false;
-            for x in 0..grid_width {
-                for y in 0..grid_height {
-                    if !grid_mask[y][x] {
+            for (x, inner) in grid_mask.iter().enumerate() {
+                for (y, mask) in inner.iter().enumerate() {
+                    if !mask {
                         continue;
                     }
-                    if model.contains(&grid_lit[depth][x][y]) {
+                    if model.contains(&grid_lit_1[x][y]) {
                         cells_to_print[x][y] = curr_letter;
                         piece_positioned.push((x, y));
                         if_found = true;
