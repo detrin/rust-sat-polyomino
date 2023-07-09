@@ -1,7 +1,7 @@
 extern crate rust_sat_polyomino as rsp;
 
-use std::vec;
 use rsp::solve;
+use std::vec;
 
 fn main() {
     let mut pieces = vec![

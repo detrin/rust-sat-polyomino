@@ -5,7 +5,7 @@ use varisat::lit::Lit;
 use varisat::solver::Solver;
 use varisat::ExtendFormula;
 
-#[derive(Debug, Clone, Eq, Hash)]
+#[derive(Debug, Clone, Eq)]
 struct Piece {
     cells: Vec<(usize, usize)>,
 }
@@ -49,11 +49,7 @@ impl PartialEq for Piece {
         if min_x != other_min_x || min_y != other_min_y {
             return false;
         }
-        let mut self_cells = self.cells.clone();
-        let mut other_cells = other.cells.clone();
-        self_cells.sort();
-        other_cells.sort();
-        self_cells == other_cells
+        self.cells == other.cells
     }
 }
 
@@ -104,7 +100,6 @@ impl Piece {
         for (cell_x, cell_y) in self.cells.iter_mut() {
             *cell_y = max_y - *cell_y;
             std::mem::swap(cell_x, cell_y);
-
         }
         self.shift_to_origin();
     }
@@ -245,7 +240,12 @@ pub fn grid_mask_str2bool(grid_mask_str: Vec<&str>) -> Vec<Vec<bool>> {
     grid_mask
 }
 
-pub fn solve(pieces: Vec<Vec<(usize, usize)>>, grid_mask: Vec<Vec<bool>>, flips_allowed: Option<bool>, verbose: Option<bool>) -> Result<Vec<Vec<(usize, usize)>>, String> {
+pub fn solve(
+    pieces: Vec<Vec<(usize, usize)>>,
+    grid_mask: Vec<Vec<bool>>,
+    flips_allowed: Option<bool>,
+    verbose: Option<bool>,
+) -> Result<Vec<Vec<(usize, usize)>>, String> {
     let is_verbose = verbose.unwrap_or(false);
     let is_flips_allowed = flips_allowed.unwrap_or(false);
     let mut solver = Solver::new();
@@ -255,22 +255,21 @@ pub fn solve(pieces: Vec<Vec<(usize, usize)>>, grid_mask: Vec<Vec<bool>>, flips_
     let mut lit_pos = 1;
     let mut clause_pos = 1;
 
-    // turn pieces into a vector of Piece objects
     let mut pieces_prep = vec![];
-    for piece in pieces.iter() {
-        // convert piece into usize vec
-        pieces_prep.push(Piece::new(piece.clone()));
+    for mut piece in pieces {
+        piece.sort_unstable();
+        pieces_prep.push(Piece::new(piece));
     }
 
     let mut grid_lit = vec![];
     let mut pieces_orientations_lit_num = vec![];
     let time_now = Instant::now();
-    for piece in pieces_prep.iter() {
+    for piece in pieces_prep {
         // println!("piece: {:?}", piece);
         let mut piece_ord_lit = vec![];
         let mut piece_ord_lit_num = vec![];
         let pieces_oriented = piece.generate_all_orientations(is_flips_allowed);
-        for p_oriented in pieces_oriented.iter() {
+        for p_oriented in pieces_oriented {
             for p_positioned in p_oriented.generate_all_positions(grid_mask.clone()).iter() {
                 // p_positioned.print_with_grid(grid_width, grid_height);
 
@@ -374,19 +373,18 @@ pub fn solve(pieces: Vec<Vec<(usize, usize)>>, grid_mask: Vec<Vec<bool>>, flips_
             if if_found {
                 curr_letter = (curr_letter as u8 + 1) as char;
                 pieces_positioned.push(piece_positioned.clone());
-            }            
+            }
         }
         let time_elapsed = time_now.elapsed();
         println!("time elapsed: {:.2?}", time_elapsed);
-        for row in cells_to_print.iter() {
-            for cell in row.iter() {
+        for row in cells_to_print {
+            for cell in row {
                 print!("{}", cell);
             }
             println!();
         }
         return Ok(pieces_positioned);
-    } 
+    }
 
-    return Err("No solution found".to_string());
-
+    Err("No solution found".to_string())
 }
