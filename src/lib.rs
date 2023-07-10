@@ -1,6 +1,7 @@
 use std::time::Instant;
 use std::vec;
 
+use varisat::dimacs::write_dimacs;
 use varisat::lit::Lit;
 use varisat::solver::Solver;
 use varisat::ExtendFormula;
@@ -240,17 +241,18 @@ pub fn grid_mask_str2bool(grid_mask_str: Vec<&str>) -> Vec<Vec<bool>> {
     grid_mask
 }
 
-pub fn solve(
+fn prepare_task(
     pieces: Vec<Vec<(usize, usize)>>,
     grid_mask: Vec<Vec<bool>>,
     flips_allowed: Option<bool>,
     verbose: Option<bool>,
-) -> Result<Vec<Vec<(usize, usize)>>, String> {
+) -> (Solver<'static>, Vec<Vec<Vec<Lit>>>) {
     let is_verbose = verbose.unwrap_or(false);
     let is_flips_allowed = flips_allowed.unwrap_or(false);
-    let mut solver = Solver::new();
     let grid_height = grid_mask.len();
     let grid_width = grid_mask[0].len();
+
+    let mut solver = Solver::new();
 
     let mut lit_pos = 1;
     let mut clause_pos = 1;
@@ -333,6 +335,20 @@ pub fn solve(
         println!("time elapsed: {:.2?}", time_elapsed);
         println!("{} clauses", clause_pos);
     }
+    (solver, grid_lit)
+}
+
+pub fn solve(
+    pieces: Vec<Vec<(usize, usize)>>,
+    grid_mask: Vec<Vec<bool>>,
+    flips_allowed: Option<bool>,
+    verbose: Option<bool>,
+) -> Result<Vec<Vec<(usize, usize)>>, String> {
+    let is_verbose = verbose.unwrap_or(false);
+    let grid_height = grid_mask.len();
+    let grid_width = grid_mask[0].len();
+
+    let (mut solver, grid_lit) = prepare_task(pieces, grid_mask.clone(), flips_allowed, verbose);
 
     let time_now = Instant::now();
     let result = solver.solve();
@@ -385,3 +401,21 @@ pub fn solve(
 
     Err("No solution found".to_string())
 }
+
+// pub fn write_to_file(
+//     filename: String,
+//     pieces: Vec<Vec<(usize, usize)>>,
+//     grid_mask: Vec<Vec<bool>>,
+//     flips_allowed: Option<bool>,
+//     verbose: Option<bool>,
+// ) {
+
+//     let is_verbose = verbose.unwrap_or(false);
+//     let grid_height = grid_mask.len();
+//     let grid_width = grid_mask[0].len();
+
+//     let (mut solver, grid_lit) = prepare_task(pieces, grid_mask.clone(), flips_allowed, verbose);
+
+//     let mut implements_write = vec![];
+//     write_dimacs(&mut implements_write, &solver);
+// }
